@@ -1,10 +1,11 @@
-import { timeStamp } from "console";
 import mongoose from "mongoose";
 /**
  * 1. Create a Schema
  * 2. Create a model
  */
 // Schema() takes multiple objects, first : schema, second : timestamps, 
+// model() takes name of model and name of schema.
+
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
