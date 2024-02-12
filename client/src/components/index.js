@@ -1,4 +1,4 @@
 import Header from "./Header";
 import FooterComp from "./Footer";
-
-export { Header, FooterComp };
+import OAuth from "./OAuth";
+export { Header, FooterComp, OAuth };

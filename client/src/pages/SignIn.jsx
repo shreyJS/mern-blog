@@ -1,14 +1,18 @@
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {useDispatch, useSelector} from 'react-redux'
-import {signInStart, signInSuccess, signInFailure} from '../redux/user/userSlice'
-
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../redux/user/userSlice";
+import { OAuth } from "../components/index";
 function SignIn() {
   const [formData, setFormData] = useState({});
-  const {loading, error} = useSelector(state => state.user)
+  const { loading, error } = useSelector((state) => state.user);
   const navigate = useNavigate();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   // field-wise input data in key-value pair, eg: { username : userOne, ... }
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
@@ -19,12 +23,12 @@ function SignIn() {
 
     // check if fields are filled
     if (!formData.email || !formData.password) {
-      return dispatch(signInFailure("Please fill out all the fields"))
+      return dispatch(signInFailure("Please fill out all the fields"));
     }
 
     // set UI to loading, send a req, req==success ? sign-in : show_error
     try {
-      dispatch(signInStart())
+      dispatch(signInStart());
       const res = await fetch("api/auth/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -33,16 +37,15 @@ function SignIn() {
 
       const data = await res.json();
       if (data.success === false) {
-        
-        dispatch(signInFailure(data.message))
+        dispatch(signInFailure(data.message));
       }
 
       if (res.ok) {
-        dispatch(signInSuccess(data))
+        dispatch(signInSuccess(data));
         navigate("/");
       }
     } catch (error) {
-      dispatch(signInFailure(error.message))
+      dispatch(signInFailure(error.message));
     }
   };
 
@@ -97,10 +100,13 @@ function SignIn() {
                 "Sign Up"
               )}
             </Button>
+            <OAuth />
           </form>
           <div className="flex gap-2 text-sm mt-5">
             <span>Don't have an account?</span>
-            <Link to="/sign-up" className="text-blue-500">Sign Up</Link>
+            <Link to="/sign-up" className="text-blue-500">
+              Sign Up
+            </Link>
           </div>
           {error && (
             <Alert className="mt-5" color="failure">

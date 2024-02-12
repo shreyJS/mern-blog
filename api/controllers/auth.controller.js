@@ -54,7 +54,7 @@ export const signup = async (req, res, next) => {
  * 5. return cookie, rest of obj
  */
 export const signin = async (req, res, next) => {
-    //destructuring obtained email and password
+  //destructuring obtained email and password
   const { email, password } = req.body;
 
   //safety check for valid fields
@@ -88,6 +88,78 @@ export const signin = async (req, res, next) => {
         httpOnly: true,
       })
       .json(rest);
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Summary of google():
+ * 1. extracting email, name and googlePhotoUrl from request body
+ * 2. find the user with same email
+ * 3. if it exists, create a token, generate and send a cookie with rest obj
+ * 4. if it doesn't exist, means user needs to be signed up first:
+ * - generating password : to include 0-9 + A-Z by concatenating two strings
+ * - creating new user by generating username, keeping email same, 
+ * - providing generated password and passing profile picture from google
+ * 5. if success, return cookie, rest of obj
+ */
+export const google = async (req, res, next) => {
+  // destructured email, name and googlePhotoUrl
+  const { email, name, googlePhotoUrl } = req.body;
+
+  // find a user in DB with same email
+  // if it exists, create a token, generate and send a cookie with rest obj
+  try {
+    const user = await User.findOne({ email });
+    if (user) {
+      const token = jwt.sign(
+        { id: user._id},
+        process.env.JWT_SECRET
+      );
+      const { password, ...rest } = user._doc;
+      res
+        .status(200)
+        .cookie("access_token", token, {
+          httpOnly: true,
+        })
+        .json(rest);
+    } else {
+
+      // generating password to include 0-9 + A-Z by concatenating two strings
+      const generatedPassword =
+        Math.random().toString(36).slice(-8) +
+        Math.random().toString(36).slice(-8);
+        // hashing this generated password 
+      const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
+      
+      // creating new user by generating username, keeping email same, 
+      // providing generated password and passing profile picture from google
+      const newUser = new User({
+        username:
+          name.toLowerCase().split(" ").join("") +
+          Math.random().toString(9).slice(-4),
+        email,
+        password: hashedPassword,
+        profilePicture: googlePhotoUrl,
+      });
+
+      // saving new user in DB
+      await newUser.save();
+
+      // create a token, generate and send a cookie with rest obj
+      const token = jwt.sign(
+        { id: newUser._id },
+        process.env.JWT_SECRET
+      );
+      const { password, ...rest } = newUser._doc;
+      res
+        .status(200)
+        .cookie("access_token", token, {
+          httpOnly: true,
+        })
+        .json(rest);
+    }
   } catch (error) {
     next(error);
   }
