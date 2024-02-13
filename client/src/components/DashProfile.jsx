@@ -15,6 +15,7 @@ import {
   updateSuccess,
   updateFailure,
 } from "../redux/user/userSlice";
+
 export default function DashProfile() {
   const { currentUser } = useSelector((state) => state.user);
   const [imageFile, setImageFile] = useState(null);
@@ -42,9 +43,17 @@ export default function DashProfile() {
     }
   }, [imageFile]);
 
+  /* uploadImage() :
+   * gets access to storage instance of the app
+   * generates unique fileName everytime
+   * generates storageReference (location to upload file within storage)
+   * uploads file to storage
+   * tracks for upload task progress and success or error */
   const uploadImage = async () => {
+    // resetting states
     setImageFileUploading(true);
     setImageFileUploadError(null);
+    // upload work
     const storage = getStorage(app);
     const fileName = new Date().getTime() + imageFile.name;
     const storageRef = ref(storage, fileName);
@@ -75,10 +84,15 @@ export default function DashProfile() {
     );
   };
 
+  // adds fieldwise values in formData state
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
+  /* handleSubmit() :
+   * if changes are made, updating user in DB and showing success alert
+   * if error occurs, showing error alert
+   * various states are maintained for showing alerts, monitoring errors, image upload status */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setUpdateUserError(null);
