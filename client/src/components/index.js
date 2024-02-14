@@ -3,4 +3,19 @@ import FooterComp from "./Footer";
 import OAuth from "./OAuth";
 import OnlyAdminPrivateRoute from "./OnlyAdminPrivateRoute";
 import PrivateRoute from "./PrivateRoute";
-export { Header, FooterComp, OAuth, PrivateRoute, OnlyAdminPrivateRoute };
+import DashSidebar from "./DashSidebar";
+import DashProfile from "./DashProfile";
+import DashPosts from "./DashPosts";
+import DashUsers from "./DashUsers";
+
+export {
+  Header,
+  FooterComp,
+  OAuth,
+  PrivateRoute,
+  OnlyAdminPrivateRoute,
+  DashSidebar,
+  DashProfile,
+  DashPosts,
+  DashUsers,
+};
