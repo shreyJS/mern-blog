@@ -7,7 +7,7 @@ import DashSidebar from "./DashSidebar";
 import DashProfile from "./DashProfile";
 import DashPosts from "./DashPosts";
 import DashUsers from "./DashUsers";
-
+import ScrollToTop from './ScrollToTop';
 export {
   Header,
   FooterComp,
@@ -18,4 +18,5 @@ export {
   DashProfile,
   DashPosts,
   DashUsers,
+  ScrollToTop
 };
